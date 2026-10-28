@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="cursos">
+        <item>DAM 1</item>
+        <item>DAM 2</item>
+        <item>SMR 1</item>
+        <item>SMR 2</item>
+        <item>GA 1</item>
+        <item>GA 2</item>
+    </string-array>
+
+    <string-array name="fotos_interior">
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+    </string-array>
+    <string-array name="nombres_interior">
+        <item>Interior 1</item>
+        <item>Interior 2</item>
+        <item>Interior 3</item>
+        <item>Interior 4</item>
+        <item>Interior 5</item>
+        <item>Interior 6</item>
+        <item>Interior 7</item>
+        <item>Interior 8</item>
+        <item>Interior 9</item>
+    </string-array>
+
+    <string-array name="fotos_exterior">
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+        <item>@drawable/foto_placeholder</item>
+    </string-array>
+    <string-array name="nombres_exterior">
+        <item>Exterior 1</item>
+        <item>Exterior 2</item>
+        <item>Exterior 3</item>
+        <item>Exterior 4</item>
+        <item>Exterior 5</item>
+        <item>Exterior 6</item>
+        <item>Exterior 7</item>
+        <item>Exterior 8</item>
+        <item>Exterior 9</item>
+    </string-array>
+</resources>

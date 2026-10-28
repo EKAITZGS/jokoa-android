@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="jokoa_azul">#185FA5</color>
+    <color name="jokoa_azul_claro">#D6E6F5</color>
+    <color name="jokoa_coral">#D85A30</color>
+    <color name="jokoa_coral_oscuro">#B8461F</color>
+    <color name="jokoa_fondo">#F4F7FB</color>
+    <color name="jokoa_texto">#1B2430</color>
+    <color name="jokoa_gris">#DCE3EC</color>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/ivDialogFoto"
+        android:layout_width="300dp"
+        android:layout_height="300dp"
+        android:contentDescription="Foto ampliada"
+        android:scaleType="fitCenter"
+        android:src="@drawable/foto_placeholder" />
+</LinearLayout>
