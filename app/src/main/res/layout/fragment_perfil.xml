@@ -45,11 +45,19 @@
             </LinearLayout>
         </LinearLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSoporte"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="20dp"
+            android:text="Soporte técnico"
+            app:backgroundTint="@color/jokoa_coral_oscuro" />
+
         <com.google.android.material.textfield.TextInputLayout
             style="?attr/textInputOutlinedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="20dp"
             android:hint="Nombre">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -131,16 +139,6 @@
             android:layout_height="56dp"
             android:layout_marginTop="20dp"
             android:text="Guardar cambios" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSoporte"
-            style="@style/Widget.Material3.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="8dp"
-            android:text="Soporte técnico"
-            android:textColor="@color/jokoa_azul"
-            app:strokeColor="@color/jokoa_azul" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSalir"
