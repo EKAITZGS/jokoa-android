@@ -32,6 +32,7 @@ public class FragmentoPedidos extends Fragment
     private RecyclerView lista;
     private LinearProgressIndicator progreso;
     private TextView tvVacio;
+    private View bloqueVacio;
 
     @Nullable
     @Override
@@ -41,6 +42,7 @@ public class FragmentoPedidos extends Fragment
         lista = vista.findViewById(R.id.lista);
         progreso = vista.findViewById(R.id.progreso);
         tvVacio = vista.findViewById(R.id.tvVacio);
+        bloqueVacio = vista.findViewById(R.id.bloqueVacio);
         lista.setLayoutManager(new LinearLayoutManager(getContext()));
 
         TabLayout pestanas = vista.findViewById(R.id.pestanas);
@@ -65,7 +67,7 @@ public class FragmentoPedidos extends Fragment
     private void cargar(boolean compras)
     {
         progreso.setVisibility(View.VISIBLE);
-        tvVacio.setVisibility(View.GONE);
+        bloqueVacio.setVisibility(View.GONE);
         Api.lista(requireContext(), compras ? "/compras" : "/alquileres",
                 datos ->
                 {
@@ -84,7 +86,7 @@ public class FragmentoPedidos extends Fragment
     private void pintar(List<FilaAdapter.Fila> filas, boolean compras)
     {
         tvVacio.setText(compras ? "Todavía no has comprado nada" : "Todavía no has alquilado nada");
-        tvVacio.setVisibility(filas.isEmpty() ? View.VISIBLE : View.GONE);
+        bloqueVacio.setVisibility(filas.isEmpty() ? View.VISIBLE : View.GONE);
         lista.setAdapter(new FilaAdapter(filas, fila -> devolver(fila.id)));
         lista.scheduleLayoutAnimation();
     }
@@ -103,8 +105,8 @@ public class FragmentoPedidos extends Fragment
                 if (j > 0) detalle.append('\n');
                 detalle.append(l.optInt("cantidad")).append(" × ").append(l.optString("nombre"));
             }
-            filas.add(new FilaAdapter.Fila(c.optInt("id"), "Compra #" + c.optInt("id") + " · " + c.optString("fecha"),
-                    detalle.toString(), String.format(Locale.getDefault(), "%.2f €", c.optDouble("total")), null));
+            filas.add(new FilaAdapter.Fila(c.optInt("id"), "Compra #" + c.optInt("id") + " · " + c.optString("fecha").substring(0, 10),
+                    null, detalle.toString(), String.format(Locale.getDefault(), "%.2f €", c.optDouble("total")), null, null, FilaAdapter.SIN_ESTADO));
         }
         return filas;
     }
@@ -118,8 +120,9 @@ public class FragmentoPedidos extends Fragment
             boolean devuelto = !a.isNull("fecha_devolucion");
             String detalle = "Del " + a.optString("fecha_inicio") + " al " + a.optString("fecha_fin")
                     + (devuelto ? "\nDevuelto el " + a.optString("fecha_devolucion") : "");
-            filas.add(new FilaAdapter.Fila(a.optInt("id"), a.optString("videojuego"), detalle,
-                    String.format(Locale.getDefault(), "%.2f €/día", a.optDouble("precio_dia")), devuelto ? null : "Devolver"));
+            filas.add(new FilaAdapter.Fila(a.optInt("id"), a.optString("videojuego"), null, detalle,
+                    String.format(Locale.getDefault(), "%.2f €/día", a.optDouble("precio_dia")), null,
+                    devuelto ? null : "Devolver", devuelto ? FilaAdapter.DEVUELTO : FilaAdapter.SIN_ESTADO));
         }
         return filas;
     }

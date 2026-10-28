@@ -5,15 +5,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.jokoa.app.datos.Producto;
 import com.jokoa.app.red.Api;
 
@@ -49,6 +51,15 @@ public class DetalleActivity extends AppCompatActivity
         stock = producto.stock;
 
         ImageView ivImagen = findViewById(R.id.ivImagen);
+        if (producto.esMovil)
+        {
+            // La foto del móvil es cuadrada y se ve entera, sin recortar
+            ViewGroup.LayoutParams lp = ivImagen.getLayoutParams();
+            lp.width = dp(220);
+            lp.height = dp(220);
+            ivImagen.setLayoutParams(lp);
+            ivImagen.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        }
         ivImagen.setTransitionName("imagen_" + producto.id);
         Glide.with(this).load(producto.imagen)
                 .placeholder(R.drawable.foto_placeholder)
@@ -56,7 +67,11 @@ public class DetalleActivity extends AppCompatActivity
                 .into(ivImagen);
 
         ((TextView) findViewById(R.id.tvNombre)).setText(producto.nombre);
-        ((TextView) findViewById(R.id.tvDetalle)).setText(producto.detalle);
+        LinearLayout chips = findViewById(R.id.chips);
+        chips.addView(crearChip(producto.etiqueta1, R.drawable.bg_chip_azul));
+        chips.addView(crearChip(producto.etiqueta2, R.drawable.bg_chip_azul));
+        // PEGI va con contorno; en los móviles las tres píldoras son iguales
+        chips.addView(crearChip(producto.etiqueta3, producto.esMovil ? R.drawable.bg_chip_azul : R.drawable.bg_chip_contorno));
         ((TextView) findViewById(R.id.tvPrecio)).setText(String.format(Locale.getDefault(), "%.2f €", producto.precio));
         ((TextView) findViewById(R.id.tvDescripcion)).setText(producto.descripcion);
         tvStock = findViewById(R.id.tvStock);
@@ -79,9 +94,42 @@ public class DetalleActivity extends AppCompatActivity
 
     private void pintarStock()
     {
-        tvStock.setText(stock > 0 ? "Quedan " + stock + " unidades" : "Sin stock");
+        if (stock > 0)
+        {
+            darEstiloChip(tvStock, "Quedan " + stock + " unidades", R.drawable.bg_chip_coral, R.color.jokoa_coral_oscuro);
+        }
+        else
+        {
+            darEstiloChip(tvStock, "Sin stock", R.drawable.bg_chip_gris, R.color.jokoa_texto);
+        }
         btnComprar.setEnabled(stock > 0);
         btnAlquilar.setEnabled(stock > 0);
+    }
+
+    private int dp(int valor)
+    {
+        return (int) (valor * getResources().getDisplayMetrics().density);
+    }
+
+    // Píldora de datos del producto (plataforma, género, PEGI, marca, memoria...)
+    private TextView crearChip(String texto, int fondo)
+    {
+        TextView chip = new TextView(this);
+        darEstiloChip(chip, texto, fondo, R.color.jokoa_azul_noche);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.setMarginEnd(dp(8));
+        chip.setLayoutParams(lp);
+        return chip;
+    }
+
+    private void darEstiloChip(TextView chip, String texto, int fondo, int colorTexto)
+    {
+        chip.setText(texto);
+        chip.setBackgroundResource(fondo);
+        chip.setTextColor(ContextCompat.getColor(this, colorTexto));
+        chip.setTextSize(12);
+        chip.setTypeface(chip.getTypeface(), android.graphics.Typeface.BOLD);
+        chip.setPadding(dp(12), dp(6), dp(12), dp(6));
     }
 
     private void comprar()
@@ -117,7 +165,7 @@ public class DetalleActivity extends AppCompatActivity
     {
         final int[] dias = {1, 3, 7};
         String[] textos = {"1 día", "3 días", "7 días"};
-        new AlertDialog.Builder(this)
+        new MaterialAlertDialogBuilder(this)
                 .setTitle("¿Cuántos días?")
                 .setItems(textos, (dialogo, cual) -> alquilar(dias[cual]))
                 .show();

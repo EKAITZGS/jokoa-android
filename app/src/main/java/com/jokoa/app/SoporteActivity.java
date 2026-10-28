@@ -17,6 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.jokoa.app.adaptadores.FilaAdapter;
 import com.jokoa.app.red.Api;
 
@@ -87,9 +89,11 @@ public class SoporteActivity extends AppCompatActivity
         for (int i = 0; i < datos.length(); i++)
         {
             JSONObject t = datos.optJSONObject(i);
-            String detalle = t.optString("departamento") + " · " + t.optString("dispositivo")
-                    + "\n" + t.optString("descripcion") + "\nAbierto el " + t.optString("fecha_apertura");
-            filas.add(new FilaAdapter.Fila(t.optInt("id"), t.optString("asunto"), detalle, t.optString("estado"), null));
+            String estado = t.optString("estado");
+            int codigo = estado.equals("cerrado") ? FilaAdapter.CERRADO : estado.equals("en_proceso") ? FilaAdapter.EN_CURSO : FilaAdapter.ABIERTO;
+            filas.add(new FilaAdapter.Fila(t.optInt("id"), t.optString("asunto"),
+                    t.optString("departamento") + " · " + t.optString("dispositivo"), t.optString("descripcion"), null,
+                    "Abierto el " + t.optString("fecha_apertura").substring(0, 10), null, codigo));
         }
         tvVacio.setVisibility(filas.isEmpty() ? View.VISIBLE : View.GONE);
         lista.setAdapter(new FilaAdapter(filas, fila -> { }));
@@ -103,13 +107,16 @@ public class SoporteActivity extends AppCompatActivity
             return;
         }
         View form = LayoutInflater.from(this).inflate(R.layout.dialogo_ticket, (ViewGroup) null);
-        Spinner sp = form.findViewById(R.id.spDepartamento);
-        sp.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, nombresDepartamento));
+        MaterialAutoCompleteTextView sp = form.findViewById(R.id.spDepartamento);
+        sp.setSimpleItems(nombresDepartamento.toArray(new String[0]));
+        sp.setText(nombresDepartamento.get(0), false);
+        final int[] elegido = {0};
+        sp.setOnItemClickListener((padre, vista, posicion, id) -> elegido[0] = posicion);
         EditText etAsunto = form.findViewById(R.id.etAsunto);
         EditText etDispositivo = form.findViewById(R.id.etDispositivo);
         EditText etDescripcion = form.findViewById(R.id.etDescripcion);
 
-        AlertDialog dialogo = new AlertDialog.Builder(this)
+        AlertDialog dialogo = new MaterialAlertDialogBuilder(this)
                 .setTitle("Nuevo ticket")
                 .setView(form)
                 .setNegativeButton("Cancelar", null)
@@ -130,7 +137,7 @@ public class SoporteActivity extends AppCompatActivity
             try
             {
                 JSONObject cuerpo = new JSONObject();
-                cuerpo.put("departamento_id", idsDepartamento.get(sp.getSelectedItemPosition()));
+                cuerpo.put("departamento_id", idsDepartamento.get(elegido[0]));
                 cuerpo.put("asunto", asunto);
                 cuerpo.put("dispositivo", dispositivo);
                 cuerpo.put("descripcion", descripcion);

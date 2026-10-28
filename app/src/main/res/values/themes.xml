@@ -1,13 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Tema Material 3 con los tokens del sistema de diseño de Jokoa -->
     <style name="Base.Theme.Jokoa" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/jokoa_azul</item>
         <item name="colorOnPrimary">@android:color/white</item>
+        <item name="colorPrimaryContainer">@color/jokoa_azul_claro</item>
+        <item name="colorOnPrimaryContainer">@color/jokoa_azul_noche</item>
         <item name="colorSecondary">@color/jokoa_coral_oscuro</item>
         <item name="colorOnSecondary">@android:color/white</item>
         <item name="colorSecondaryContainer">@color/jokoa_azul_claro</item>
-        <item name="colorOnSecondaryContainer">@color/jokoa_azul</item>
+        <item name="colorOnSecondaryContainer">@color/jokoa_azul_noche</item>
+        <item name="colorTertiaryContainer">@color/jokoa_coral_tenue</item>
+        <item name="colorOnTertiaryContainer">@color/jokoa_coral_oscuro</item>
+        <item name="colorSurface">@color/jokoa_superficie</item>
+        <item name="colorOnSurface">@color/jokoa_texto</item>
+        <item name="colorOnSurfaceVariant">@color/jokoa_texto_2</item>
+        <item name="colorOutline">@color/jokoa_borde_campo</item>
+        <item name="colorOutlineVariant">@color/jokoa_borde</item>
+        <item name="colorError">@color/jokoa_coral_oscuro</item>
+        <item name="android:colorBackground">@color/jokoa_fondo</item>
         <item name="android:windowBackground">@color/jokoa_fondo</item>
         <item name="android:textColorPrimary">@color/jokoa_texto</item>
+        <item name="android:textColorSecondary">@color/jokoa_texto_2</item>
+        <!-- Sin tinte azul sobre las superficies elevadas: las tarjetas son blancas -->
+        <item name="elevationOverlayEnabled">false</item>
+
+
+        <item name="materialButtonStyle">@style/Widget.Jokoa.Button</item>
+        <item name="materialCardViewStyle">@style/Widget.Jokoa.Card</item>
+        <item name="textInputStyle">@style/Widget.Jokoa.TextInput</item>
+        <item name="bottomNavigationStyle">@style/Widget.Jokoa.BottomNav</item>
+        <item name="tabStyle">@style/Widget.Jokoa.Tabs</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.Jokoa.Dialogo</item>
     </style>
 
     <style name="Theme.Jokoa" parent="Base.Theme.Jokoa" />

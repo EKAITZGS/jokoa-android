@@ -1,75 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:background="@color/jokoa_fondo">
+
+    <include layout="@layout/fondo_decorado" />
 
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
             <View
                 android:id="@+id/c1"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:layout_margin="5dp"
+                android:layout_margin="6dp"
                 android:background="@drawable/bg_cuadro_azul" />
-
             <View
                 android:id="@+id/c2"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:layout_margin="5dp"
+                android:layout_margin="6dp"
                 android:background="@drawable/bg_cuadro_azul" />
-        </LinearLayout>
+            </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
             <View
                 android:id="@+id/c3"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:layout_margin="5dp"
+                android:layout_margin="6dp"
                 android:background="@drawable/bg_cuadro_azul" />
-
             <View
                 android:id="@+id/c4"
                 android:layout_width="56dp"
                 android:layout_height="56dp"
-                android:layout_margin="5dp"
+                android:layout_margin="6dp"
                 android:background="@drawable/bg_cuadro_coral" />
+            </LinearLayout>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvMarca"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:alpha="0"
+            android:text="Jokoa"
+            android:textColor="@color/jokoa_azul"
+            android:textSize="44sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tvLema"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:alpha="0"
+            android:text="by JuegAlmi"
+            android:textColor="@color/jokoa_coral_oscuro"
+            android:textSize="16sp" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/tvMarca"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:alpha="0"
-        android:text="Jokoa"
-        android:textColor="@color/jokoa_azul"
-        android:textSize="40sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/tvLema"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:alpha="0"
-        android:text="by JuegAlmi"
-        android:textColor="@color/jokoa_coral_oscuro"
-        android:textSize="16sp" />
-</LinearLayout>
+</FrameLayout>

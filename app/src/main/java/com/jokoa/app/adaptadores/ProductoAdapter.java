@@ -47,11 +47,19 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Holder
         }
     }
 
+    // 0 = videojuego (portada vertical), 1 = móvil (foto cuadrada que se ve entera)
+    @Override
+    public int getItemViewType(int posicion)
+    {
+        return productos.get(posicion).esMovil ? 1 : 0;
+    }
+
     @NonNull
     @Override
     public Holder onCreateViewHolder(@NonNull ViewGroup padre, int tipo)
     {
-        return new Holder(LayoutInflater.from(padre.getContext()).inflate(R.layout.item_producto, padre, false));
+        int layout = tipo == 1 ? R.layout.item_producto_movil : R.layout.item_producto;
+        return new Holder(LayoutInflater.from(padre.getContext()).inflate(layout, padre, false));
     }
 
     @Override

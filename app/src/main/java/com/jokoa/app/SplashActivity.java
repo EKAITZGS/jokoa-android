@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,11 +30,18 @@ public class SplashActivity extends AppCompatActivity
             cuadro.setScaleX(0f);
             cuadro.setScaleY(0f);
             cuadro.animate().scaleX(1f).scaleY(1f)
-                    .setStartDelay(150L * i).setDuration(450)
-                    .setInterpolator(new OvershootInterpolator(2f)).start();
+                    .setStartDelay(120L * i).setDuration(450)
+                    .setInterpolator(new OvershootInterpolator(1.8f)).start();
         }
-        findViewById(R.id.tvMarca).animate().alpha(1f).setStartDelay(750).setDuration(400).start();
-        findViewById(R.id.tvLema).animate().alpha(1f).setStartDelay(1000).setDuration(400).start();
+        // El nombre y el lema suben mientras aparecen (300 ms, desde los 600 y 800 ms)
+        float subida = 16 * getResources().getDisplayMetrics().density;
+        for (int[] t : new int[][]{{R.id.tvMarca, 600}, {R.id.tvLema, 800}})
+        {
+            View texto = findViewById(t[0]);
+            texto.setTranslationY(subida);
+            texto.animate().alpha(1f).translationY(0f).setStartDelay(t[1]).setDuration(300)
+                    .setInterpolator(new DecelerateInterpolator()).start();
+        }
 
         manejador.postDelayed(this::seguir, 1700);
     }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/raiz"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/jokoa_fondo">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +15,8 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:padding="8dp">
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="8dp">
 
             <ImageButton
                 android:id="@+id/btnAtras"
@@ -26,13 +27,11 @@
                 android:src="@drawable/ic_atras" />
 
             <TextView
+                style="@style/Texto.Titulo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Soporte técnico"
-                android:textColor="@color/jokoa_texto"
-                android:textSize="24sp"
-                android:textStyle="bold" />
+                android:text="Soporte técnico" />
         </LinearLayout>
 
         <com.google.android.material.progressindicator.LinearProgressIndicator
@@ -40,6 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:indeterminate="true"
+            app:hideAnimationBehavior="none"
             app:indicatorColor="@color/jokoa_coral"
             app:trackColor="@color/jokoa_azul_claro"
             app:trackThickness="4dp" />
@@ -54,27 +54,51 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:clipToPadding="false"
-                android:paddingBottom="88dp"
-                android:paddingHorizontal="8dp" />
+                android:layoutAnimation="@anim/layout_lista"
+                android:paddingHorizontal="16dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="96dp" />
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/tvVacio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:text="No tienes tickets abiertos"
-                android:textSize="16sp"
-                android:visibility="gone" />
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <FrameLayout
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:background="@drawable/bg_circulo_tenue">
+
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:importantForAccessibility="no"
+                        android:src="@drawable/ic_headset_azul" />
+                </FrameLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="No tienes tickets abiertos"
+                    android:textColor="@color/jokoa_texto_2"
+                    android:textSize="16sp" />
+            </LinearLayout>
         </FrameLayout>
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/btnNuevo"
+        style="@style/Widget.Jokoa.Fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
         android:text="Nuevo ticket"
-        android:textColor="@android:color/white"
-        app:backgroundTint="@color/jokoa_coral_oscuro" />
+        app:icon="@drawable/ic_plus" />
 </FrameLayout>

@@ -17,6 +17,8 @@ public class Producto implements Serializable
     public final String detalle;  // línea extra: marca/RAM o plataforma/PEGI
     public final boolean esMovil;
     public final double alquilerDia; // solo videojuegos
+    // Datos para las píldoras de la ficha: marca/almacenamiento/RAM (móvil) o plataforma/género/PEGI (juego)
+    public final String etiqueta1, etiqueta2, etiqueta3;
 
     public Producto(JSONObject j, boolean esMovil)
     {
@@ -31,13 +33,17 @@ public class Producto implements Serializable
         imagen = (imagenes != null && imagenes.length() > 0) ? imagenes.optString(0) : "";
         if (esMovil)
         {
-            detalle = j.optString("marca") + " · " + j.optInt("almacenamiento_gb") + " GB · "
-                    + j.optInt("ram_gb") + " GB RAM";
+            etiqueta1 = j.optString("marca");
+            etiqueta2 = j.optInt("almacenamiento_gb") + " GB";
+            etiqueta3 = j.optInt("ram_gb") + " GB RAM";
+            detalle = etiqueta1 + " · " + etiqueta2 + " · " + etiqueta3;
         }
         else
         {
-            detalle = j.optString("plataforma") + " · " + j.optString("genero")
-                    + " · PEGI " + j.optInt("pegi");
+            etiqueta1 = j.optString("plataforma");
+            etiqueta2 = j.optString("genero");
+            etiqueta3 = "PEGI " + j.optInt("pegi");
+            detalle = etiqueta1 + " · " + etiqueta2 + " · " + etiqueta3;
         }
     }
 }
