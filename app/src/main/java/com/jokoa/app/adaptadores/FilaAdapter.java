@@ -27,9 +27,16 @@ public class FilaAdapter extends RecyclerView.Adapter<FilaAdapter.Vista>
     {
         public final int id, estado;
         public final String titulo, subtitulo, detalle, derecha, pie, boton;
+        public final String etiqueta; // texto de la píldora de estado si no es el de por defecto (reparaciones)
 
         public Fila(int id, String titulo, String subtitulo, String detalle, String derecha, String pie, String boton, int estado)
         {
+            this(id, titulo, subtitulo, detalle, derecha, pie, boton, estado, null);
+        }
+
+        public Fila(int id, String titulo, String subtitulo, String detalle, String derecha, String pie, String boton, int estado, String etiqueta)
+        {
+            this.etiqueta = etiqueta;
             this.id = id;
             this.titulo = titulo;
             this.subtitulo = subtitulo;
@@ -77,7 +84,7 @@ public class FilaAdapter extends RecyclerView.Adapter<FilaAdapter.Vista>
         }
         else if (f.estado != SIN_ESTADO)
         {
-            estiloChip(v.chipEstado, f.estado == ABIERTO ? "Abierto" : f.estado == EN_CURSO ? "En curso" : "Cerrado", f.estado);
+            estiloChip(v.chipEstado, f.etiqueta != null ? f.etiqueta : f.estado == ABIERTO ? "Abierto" : f.estado == EN_CURSO ? "En curso" : "Cerrado", f.estado);
         }
 
         v.btn.setVisibility(f.boton == null ? View.GONE : View.VISIBLE);

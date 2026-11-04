@@ -47,11 +47,11 @@ public class ProductoAdapter extends RecyclerView.Adapter<ProductoAdapter.Holder
         }
     }
 
-    // 0 = videojuego (portada vertical), 1 = móvil (foto cuadrada que se ve entera)
+    // 0 = videojuego (portada vertical), 1 = móvil o artículo (foto cuadrada que se ve entera)
     @Override
     public int getItemViewType(int posicion)
     {
-        return productos.get(posicion).esMovil ? 1 : 0;
+        return productos.get(posicion).esJuego ? 0 : 1;
     }
 
     @NonNull

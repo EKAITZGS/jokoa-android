@@ -4,7 +4,8 @@ App nativa en Java de la tienda de videojuegos y móviles Jokoa. Consume la API 
 (`https://jokoa.duckdns.org/ws`, repositorio `juegalmi-backend`), la misma base de datos que usarán la app Ionic y la web Angular.
 
 - Splash animado, login y registro con JWT (sesión guardada en SharedPreferences; si el token caduca vuelve al login)
-- Juegos y Móviles: lista con Volley + Glide + RecyclerView, esqueleto de carga y ficha con compra y alquiler
+- Tienda con cinco secciones (Juegos, Móviles, Ordenadores, Tablets y Gaming): lista con Volley + Glide + RecyclerView, esqueleto de carga, filtro por categoría y ficha con compra, alquiler (juegos), ficha técnica (artículos) y garantía ampliada (móviles, tablets y ordenadores)
+- Asesor de compra: chat con IA que consulta el catálogo real (`/ws/asistente`) y enseña tarjetas de los productos recomendados
 - Pedidos: compras y alquileres, con devolución
 - Tiendas: mapa osmdroid con las tiendas de la API
 - Perfil editable y soporte técnico (tickets por departamento)

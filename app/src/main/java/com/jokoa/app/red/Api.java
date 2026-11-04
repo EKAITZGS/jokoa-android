@@ -98,6 +98,33 @@ public class Api
         });
     }
 
+    // GET que devuelve un archivo (la factura en PDF) con la sesión del usuario
+    public static void descargar(Context c, String ruta,
+                                 Response.Listener<byte[]> ok, Response.ErrorListener error)
+    {
+        final Context contexto = c;
+        cola(c).add(new Request<byte[]>(Request.Method.GET, BASE + ruta, sesionCaducada(c, error))
+        {
+            @Override
+            public Map<String, String> getHeaders()
+            {
+                return cabeceras(contexto);
+            }
+
+            @Override
+            protected Response<byte[]> parseNetworkResponse(com.android.volley.NetworkResponse r)
+            {
+                return Response.success(r.data, com.android.volley.toolbox.HttpHeaderParser.parseCacheHeaders(r));
+            }
+
+            @Override
+            protected void deliverResponse(byte[] respuesta)
+            {
+                ok.onResponse(respuesta);
+            }
+        });
+    }
+
     // Texto "mensaje" que devuelve la API en un error (409 sin stock, 403 contraseña...), o el de por defecto
     public static String mensaje(VolleyError error, String porDefecto)
     {
@@ -120,6 +147,11 @@ public class Api
         return porDefecto;
     }
 
+    public static int get()
+    {
+        return Request.Method.GET;
+    }
+
     public static int post()
     {
         return Request.Method.POST;
@@ -128,5 +160,10 @@ public class Api
     public static int put()
     {
         return Request.Method.PUT;
+    }
+
+    public static int delete()
+    {
+        return Request.Method.DELETE;
     }
 }

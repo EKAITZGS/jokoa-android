@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,6 +17,8 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.jokoa.app.datos.Comparar;
+import com.jokoa.app.datos.Favoritos;
 import com.jokoa.app.datos.Producto;
 import com.jokoa.app.red.Api;
 
@@ -31,7 +34,8 @@ public class DetalleActivity extends AppCompatActivity
     private Producto producto;
     private int stock;
     private TextView tvStock;
-    private Button btnComprar, btnAlquilar;
+    private Button btnComprar, btnAlquilar, btnGarantia;
+    private int garantia = -1; // posición elegida en producto.garantiaMeses, o -1
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -45,15 +49,19 @@ public class DetalleActivity extends AppCompatActivity
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) atras.getLayoutParams();
             lp.topMargin = insets.getInsets(WindowInsetsCompat.Type.systemBars()).top + (int) (16 * getResources().getDisplayMetrics().density);
             atras.setLayoutParams(lp);
+            View fav = findViewById(R.id.btnFavorito);
+            ViewGroup.MarginLayoutParams lpf = (ViewGroup.MarginLayoutParams) fav.getLayoutParams();
+            lpf.topMargin = lp.topMargin;
+            fav.setLayoutParams(lpf);
             return insets;
         });
         producto = (Producto) getIntent().getSerializableExtra("producto");
         stock = producto.stock;
 
         ImageView ivImagen = findViewById(R.id.ivImagen);
-        if (producto.esMovil)
+        if (!producto.esJuego)
         {
-            // La foto del móvil es cuadrada y se ve entera, sin recortar
+            // La foto de móviles y artículos es cuadrada y se ve entera, sin recortar
             ViewGroup.LayoutParams lp = ivImagen.getLayoutParams();
             lp.width = dp(220);
             lp.height = dp(220);
@@ -68,19 +76,62 @@ public class DetalleActivity extends AppCompatActivity
 
         ((TextView) findViewById(R.id.tvNombre)).setText(producto.nombre);
         LinearLayout chips = findViewById(R.id.chips);
-        chips.addView(crearChip(producto.etiqueta1, R.drawable.bg_chip_azul));
-        chips.addView(crearChip(producto.etiqueta2, R.drawable.bg_chip_azul));
-        // PEGI va con contorno; en los móviles las tres píldoras son iguales
-        chips.addView(crearChip(producto.etiqueta3, producto.esMovil ? R.drawable.bg_chip_azul : R.drawable.bg_chip_contorno));
+        // Las píldoras vacías (artículos con pocos datos) no se pintan; PEGI va con contorno
+        for (String etiqueta : new String[]{producto.etiqueta1, producto.etiqueta2})
+        {
+            if (!etiqueta.isEmpty())
+            {
+                chips.addView(crearChip(etiqueta, R.drawable.bg_chip_azul));
+            }
+        }
+        if (!producto.etiqueta3.isEmpty())
+        {
+            chips.addView(crearChip(producto.etiqueta3, producto.esJuego ? R.drawable.bg_chip_contorno : R.drawable.bg_chip_azul));
+        }
+        pintarFicha();
+        if (producto.garantiaMeses.length > 0)
+        {
+            btnGarantia = findViewById(R.id.btnGarantia);
+            btnGarantia.setVisibility(View.VISIBLE);
+            btnGarantia.setOnClickListener(v -> elegirGarantia());
+        }
         ((TextView) findViewById(R.id.tvPrecio)).setText(String.format(Locale.getDefault(), "%.2f €", producto.precio));
         ((TextView) findViewById(R.id.tvDescripcion)).setText(producto.descripcion);
         tvStock = findViewById(R.id.tvStock);
         btnComprar = findViewById(R.id.btnComprar);
         btnAlquilar = findViewById(R.id.btnAlquilar);
         findViewById(R.id.btnAtras).setOnClickListener(v -> supportFinishAfterTransition());
+        ImageButton btnFavorito = findViewById(R.id.btnFavorito);
+        Runnable pintarCorazon = () ->
+        {
+            boolean marcado = Favoritos.es(producto.id);
+            btnFavorito.setImageResource(marcado ? R.drawable.ic_corazon_lleno : R.drawable.ic_corazon);
+            btnFavorito.setContentDescription(marcado ? "Quitar de favoritos" : "Añadir a favoritos");
+        };
+        pintarCorazon.run();
+        btnFavorito.setOnClickListener(v -> Favoritos.alternar(this, producto.id, pintarCorazon));
+
+        Button btnComparar = findViewById(R.id.btnComparar);
+        Button btnVer = findViewById(R.id.btnVerComparacion);
+        Runnable pintarComparar = () ->
+        {
+            btnComparar.setText(Comparar.es(producto.id) ? "Quitar del comparador" : "Añadir al comparador");
+            btnVer.setVisibility(Comparar.items().size() >= 2 ? View.VISIBLE : View.GONE);
+            btnVer.setText("Ver comparación (" + Comparar.items().size() + ")");
+        };
+        pintarComparar.run();
+        btnComparar.setOnClickListener(v ->
+        {
+            if (!Comparar.alternar(producto))
+            {
+                Toast.makeText(this, "Solo puedes comparar " + Comparar.MAX + " productos a la vez", Toast.LENGTH_SHORT).show();
+            }
+            pintarComparar.run();
+        });
+        btnVer.setOnClickListener(v -> startActivity(new android.content.Intent(this, ComparadorActivity.class)));
 
         btnComprar.setOnClickListener(v -> comprar());
-        if (producto.esMovil)
+        if (!producto.esJuego)
         {
             btnAlquilar.setVisibility(View.GONE);
         }
@@ -90,6 +141,65 @@ public class DetalleActivity extends AppCompatActivity
             btnAlquilar.setOnClickListener(v -> elegirDias());
         }
         pintarStock();
+        pintarGarantia();
+    }
+
+    // Ficha técnica de los artículos: una fila "dato · valor" por característica
+    private void pintarFicha()
+    {
+        if (producto.ficha.isEmpty())
+        {
+            return;
+        }
+        LinearLayout ficha = findViewById(R.id.fichaTecnica);
+        ficha.setVisibility(View.VISIBLE);
+        TextView titulo = new TextView(this);
+        titulo.setText("Ficha técnica");
+        titulo.setTextColor(ContextCompat.getColor(this, R.color.jokoa_texto));
+        titulo.setTextSize(18);
+        titulo.setTypeface(titulo.getTypeface(), android.graphics.Typeface.BOLD);
+        ficha.addView(titulo);
+        for (String[] dato : producto.ficha)
+        {
+            TextView fila = new TextView(this);
+            fila.setText(android.text.Html.fromHtml("<b>" + android.text.Html.escapeHtml(dato[0]) + ":</b> " + android.text.Html.escapeHtml(dato[1]), android.text.Html.FROM_HTML_MODE_COMPACT));
+            fila.setTextColor(ContextCompat.getColor(this, R.color.jokoa_texto));
+            fila.setTextSize(15);
+            fila.setPadding(0, dp(6), 0, 0);
+            ficha.addView(fila);
+        }
+    }
+
+    // Garantía ampliada: por unidad, se elige antes de comprar (-1 = sin garantía ampliada)
+    private void elegirGarantia()
+    {
+        String[] opciones = new String[producto.garantiaMeses.length + 1];
+        opciones[0] = "Sin garantía ampliada";
+        for (int i = 0; i < producto.garantiaMeses.length; i++)
+        {
+            opciones[i + 1] = String.format(Locale.getDefault(), "+%d meses · %.2f €", producto.garantiaMeses[i], producto.garantiaPrecio[i]);
+        }
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Garantía ampliada")
+                .setSingleChoiceItems(opciones, garantia + 1, (dialogo, cual) ->
+                {
+                    garantia = cual - 1;
+                    pintarGarantia();
+                    dialogo.dismiss();
+                })
+                .show();
+    }
+
+    // El botón de garantía y el de comprar muestran lo elegido y el total
+    private void pintarGarantia()
+    {
+        double total = producto.precio + (garantia >= 0 ? producto.garantiaPrecio[garantia] : 0);
+        if (btnGarantia != null)
+        {
+            btnGarantia.setText(garantia < 0 ? "Garantía ampliada: sin elegir"
+                    : String.format(Locale.getDefault(), "Garantía +%d meses · %.2f €", producto.garantiaMeses[garantia], producto.garantiaPrecio[garantia]));
+        }
+        btnComprar.setText(garantia < 0 ? "Comprar" : String.format(Locale.getDefault(), "Comprar · %.2f €", total));
     }
 
     private void pintarStock()
@@ -132,16 +242,45 @@ public class DetalleActivity extends AppCompatActivity
         chip.setPadding(dp(12), dp(6), dp(12), dp(6));
     }
 
+    // La compra se recoge en tienda: primero se elige cuál
     private void comprar()
+    {
+        btnComprar.setEnabled(false);
+        Api.lista(this, "/tiendas",
+                tiendas ->
+                {
+                    String[] nombres = new String[tiendas.length()];
+                    for (int i = 0; i < nombres.length; i++)
+                    {
+                        nombres[i] = tiendas.optJSONObject(i).optString("nombre");
+                    }
+                    new MaterialAlertDialogBuilder(this)
+                            .setTitle("¿Dónde recoges tu pedido?")
+                            .setItems(nombres, (dialogo, cual) -> enviarCompra(tiendas.optJSONObject(cual).optInt("id")))
+                            .setOnCancelListener(d -> pintarStock())
+                            .show();
+                },
+                error ->
+                {
+                    pintarStock();
+                    Toast.makeText(this, Api.mensaje(error, "No se pudieron cargar las tiendas"), Toast.LENGTH_LONG).show();
+                });
+    }
+
+    private void enviarCompra(int tiendaId)
     {
         try
         {
             JSONObject linea = new JSONObject();
             linea.put("producto_id", producto.id);
             linea.put("cantidad", 1);
+            if (garantia >= 0)
+            {
+                linea.put("garantia_meses", producto.garantiaMeses[garantia]);
+            }
             JSONObject cuerpo = new JSONObject();
             cuerpo.put("lineas", new JSONArray().put(linea));
-            btnComprar.setEnabled(false);
+            cuerpo.put("tienda_id", tiendaId);
             Api.enviar(this, Api.post(), "/compras/add", cuerpo,
                     respuesta ->
                     {

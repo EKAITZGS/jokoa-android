@@ -73,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:alpha="0"
-            android:text="by JuegAlmi"
+            android:text="by Jokoa"
             android:textColor="@color/jokoa_coral_oscuro"
             android:textSize="16sp" />
     </LinearLayout>

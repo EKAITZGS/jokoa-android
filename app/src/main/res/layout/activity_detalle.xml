@@ -86,10 +86,45 @@
                     android:textColor="@color/jokoa_texto"
                     android:textSize="16sp" />
 
+                <!-- Ficha técnica de los artículos: las filas se añaden desde el código -->
+                <LinearLayout
+                    android:id="@+id/fichaTecnica"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical"
+                    android:visibility="gone" />
+
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnGarantia"
+                    style="@style/Widget.Jokoa.Button.Tonal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:text="Garantía ampliada"
+                    android:visibility="gone" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnComparar"
+                    style="@style/Widget.Jokoa.Button.Tonal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Añadir al comparador" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnVerComparacion"
+                    style="@style/Widget.Jokoa.Button.Tonal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Ver comparación"
+                    android:visibility="gone" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnComprar"
@@ -118,4 +153,15 @@
         android:contentDescription="Volver"
         android:elevation="4dp"
         android:src="@drawable/ic_atras" />
+
+    <ImageButton
+        android:id="@+id/btnFavorito"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="end"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_boton_atras"
+        android:contentDescription="Añadir a favoritos"
+        android:elevation="4dp"
+        android:src="@drawable/ic_corazon" />
 </FrameLayout>

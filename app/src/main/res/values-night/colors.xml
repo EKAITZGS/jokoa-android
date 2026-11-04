@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="jokoa_azul">#3B82C8</color>
+    <color name="jokoa_azul_noche">#CFE3F8</color>
+    <color name="jokoa_azul_claro">#21436B</color>
+    <color name="jokoa_azul_tenue">#1B2D45</color>
+    <color name="jokoa_coral">#E0693F</color>
+    <color name="jokoa_coral_oscuro">#D9623A</color>
+    <color name="jokoa_coral_pulsado">#B94E28</color>
+    <color name="jokoa_coral_tenue">#3A2219</color>
+    <color name="jokoa_fondo">#0E1621</color>
+    <color name="jokoa_superficie">#172131</color>
+    <color name="jokoa_texto">#E6ECF5</color>
+    <color name="jokoa_texto_2">#9FB0C7</color>
+    <color name="jokoa_borde">#2B3A51</color>
+    <color name="jokoa_borde_campo">#7F90A8</color>
+    <color name="jokoa_gris">#2A3649</color>
+    <color name="jokoa_exito">#62D197</color>
+    <color name="jokoa_exito_tenue">#17382A</color>
+</resources>

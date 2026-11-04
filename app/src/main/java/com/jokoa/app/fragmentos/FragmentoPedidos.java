@@ -1,5 +1,7 @@
 package com.jokoa.app.fragmentos;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +25,8 @@ import com.jokoa.app.red.Api;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -87,7 +92,7 @@ public class FragmentoPedidos extends Fragment
     {
         tvVacio.setText(compras ? "Todavía no has comprado nada" : "Todavía no has alquilado nada");
         bloqueVacio.setVisibility(filas.isEmpty() ? View.VISIBLE : View.GONE);
-        lista.setAdapter(new FilaAdapter(filas, fila -> devolver(fila.id)));
+        lista.setAdapter(new FilaAdapter(filas, fila -> { if (compras) factura(fila.id); else devolver(fila.id); }));
         lista.scheduleLayoutAnimation();
     }
 
@@ -104,9 +109,15 @@ public class FragmentoPedidos extends Fragment
                 JSONObject l = lineas.optJSONObject(j);
                 if (j > 0) detalle.append('\n');
                 detalle.append(l.optInt("cantidad")).append(" × ").append(l.optString("nombre"));
+                if (!l.isNull("garantia_meses") && l.optInt("garantia_meses") > 0)
+                {
+                    detalle.append(" · garantía +").append(l.optInt("garantia_meses")).append(" meses");
+                }
             }
+            JSONObject tienda = c.optJSONObject("tienda");
+            if (tienda != null) detalle.append("\nRecogida en ").append(tienda.optString("nombre"));
             filas.add(new FilaAdapter.Fila(c.optInt("id"), "Compra #" + c.optInt("id") + " · " + c.optString("fecha").substring(0, 10),
-                    null, detalle.toString(), String.format(Locale.getDefault(), "%.2f €", c.optDouble("total")), null, null, FilaAdapter.SIN_ESTADO));
+                    null, detalle.toString(), String.format(Locale.getDefault(), "%.2f €", c.optDouble("total")), null, "Factura PDF", FilaAdapter.SIN_ESTADO));
         }
         return filas;
     }
@@ -125,6 +136,31 @@ public class FragmentoPedidos extends Fragment
                     devuelto ? null : "Devolver", devuelto ? FilaAdapter.DEVUELTO : FilaAdapter.SIN_ESTADO));
         }
         return filas;
+    }
+
+    // Baja el PDF con la sesión, lo guarda en la caché de la app y lo abre con el visor del móvil
+    private void factura(int id)
+    {
+        Api.descargar(requireContext(), "/compras/" + id + "/factura",
+                bytes ->
+                {
+                    if (!isAdded()) return;
+                    try
+                    {
+                        File carpeta = new File(requireContext().getCacheDir(), "facturas");
+                        carpeta.mkdirs();
+                        File pdf = new File(carpeta, "factura-" + id + ".pdf");
+                        try (FileOutputStream salida = new FileOutputStream(pdf)) { salida.write(bytes); }
+                        Uri uri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".archivos", pdf);
+                        startActivity(new Intent(Intent.ACTION_VIEW).setDataAndType(uri, "application/pdf")
+                                .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION));
+                    }
+                    catch (Exception e)
+                    {
+                        Toast.makeText(getContext(), "No hay ninguna app para abrir PDF", Toast.LENGTH_LONG).show();
+                    }
+                },
+                error -> Toast.makeText(getContext(), Api.mensaje(error, "No se pudo descargar la factura"), Toast.LENGTH_LONG).show());
     }
 
     private void devolver(int id)
